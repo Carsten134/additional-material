@@ -216,7 +216,7 @@ data_unif_p_plot <- include_method(data_unif_p)
 ## plotting the data ###########################################################
 theme_set(theme_minimal())
 
-p <- data_norm_b_plot %>%
+p <- data_cauchy_plot %>%
   ggplot(aes(x = offset,
              y = relative,
              group = method,
@@ -229,8 +229,8 @@ p + geom_line(size = 1) +
              linetype = "dashed",
              color = "grey37") +
   labs(title = "Beta Simulation",
-       subtitle = "Normalverteilung") +
-  xlab(expression(tau[i])) +
+       subtitle = "Cauchy Verteilung") +
+  xlab(expression(tau[1])) +
   ylab("Güte")
 
 
