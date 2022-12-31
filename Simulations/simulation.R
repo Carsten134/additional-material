@@ -27,18 +27,14 @@ gen_rnorm_params <- function(offset) {
 gen_runif_params <- function(offset) {
   force(offset)
   min <- c(offset, 0, 0)
-  max <- c(offset + 1, 1, 1)
+  max <- c(offset + 2, 2, 2)
   return(data.frame(min = min,
                     max = max))
 }
 
 gen_cauchy_params <- function(offset) {
   force(offset)
-  if (offset < 0) {
-    location <- c(0, -offset, -offset)
-  } else {
-    location <- c(offset, 0, 0)
-  }
+  location <- c(offset, 0, 0)
   scale <- c(1, 1, 1)
   return(data.frame(location = location,
                     scale = scale))
@@ -216,21 +212,24 @@ data_unif_p_plot <- include_method(data_unif_p)
 ## plotting the data ###########################################################
 theme_set(theme_minimal())
 
-p <- data_cauchy_plot %>%
+p <- data_norm_p_plot %>%
   ggplot(aes(x = offset,
              y = relative,
              group = method,
-             color = method)) +
+             color = method,
+             fill = method)) +
   theme(text = element_text(size = 13,
                             family= "Lato"))
 
-p + geom_line(size = 1) +
+p + geom_point(size = 1,
+               alpha = 0.5) +
+  geom_smooth(size = 1) +
   geom_hline(yintercept = 0.05,
              linetype = "dashed",
              color = "grey37") +
-  labs(title = "Beta Simulation",
-       subtitle = "Cauchy Verteilung") +
-  xlab(expression(tau[1])) +
+  labs(title = "Power-Simulation",
+       subtitle = "Normalverteilung") +
+  xlab(expression(n)) +
   ylab("Güte")
 
 
