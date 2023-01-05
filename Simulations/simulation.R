@@ -6,7 +6,7 @@ library(devtools)
 library(clinfun)
 
 ## config params ###############################################################
-offset <- seq(-1,1, len = 20)
+offset <- seq(-0.5,0.5, len = 21)
 alpha <- 0.05
 k <- 3
 n_sim <- 1000
@@ -168,9 +168,13 @@ gen_data_power <- function(gen_destribution, gen_params, off) {
 
 data_norm_b <- gen_data_beta(gen_rnorm_vector, gen_rnorm_params)
 data_unif_b <- gen_data_beta(gen_runif_vector, gen_runif_params)
+data_cauchy_b <- gen_data_beta(gen_rcauchy_vector, gen_cauchy_params)
+
 
 data_norm_p <- gen_data_power(gen_rnorm_vector, gen_rnorm_params, offset[17])
 data_unif_p <- gen_data_power(gen_runif_vector, gen_runif_params, offset[12])
+data_cauchy_p <- gen_data_power(gen_rcauchy_vector, gen_cauchy_params, 2)
+
 ## enhancing data ##############################################################
 
 # include method
@@ -205,14 +209,17 @@ include_method_beta <- function(data) {
 
 data_norm_b_plot <- include_method(data_norm_b)
 data_unif_b_plot <- include_method(data_unif_b)
+data_cauchy_b_plot <- include_method(data_cauchy_b)
+
 
 data_norm_p_plot <- include_method(data_norm_p)
 data_unif_p_plot <- include_method(data_unif_p)
+data_cauchy_p_plot <- include_method(data_cauchy_p)
 
 ## plotting the data ###########################################################
 theme_set(theme_minimal())
 
-p <- data_norm_p_plot %>%
+p <- data_unif_b_plot %>%
   ggplot(aes(x = offset,
              y = relative,
              group = method,
@@ -221,16 +228,34 @@ p <- data_norm_p_plot %>%
   theme(text = element_text(size = 13,
                             family= "Lato"))
 
-p + geom_point(size = 1,
-               alpha = 0.5) +
-  geom_smooth(size = 1) +
+p + geom_line(size = 1) +
+  geom_hline(yintercept = 0.05,
+             linetype = "dashed",
+             color = "grey37") +
+  labs(title = "Beta-Simulation",
+       subtitle = "Cauchy-Verteilung") +
+  xlab(expression(alpha[1])) +
+  ylab("Güte")
+
+
+p_p <- data_cauchy_p_plot %>%
+  ggplot(aes(x = offset,
+             y = relative,
+             group = method,
+             color = method,
+             fill = method)) +
+  theme(text = element_text(size = 13,
+                            family= "Lato"))
+
+p_p + geom_point(size = 1,
+                 alpha = 0.5) +
+  geom_smooth(alpha = 0.5) +
   geom_hline(yintercept = 0.05,
              linetype = "dashed",
              color = "grey37") +
   labs(title = "Power-Simulation",
-       subtitle = "Normalverteilung") +
+       subtitle = "Cauchy-Verteilung") +
   xlab(expression(n)) +
   ylab("Güte")
-
 
 
