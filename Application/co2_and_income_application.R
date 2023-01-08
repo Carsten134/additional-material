@@ -63,7 +63,7 @@ test_data <- test_data %>%
 ## explorative data analysis ###################################################
 
 # test for normal-destribution --> p-val = 0.9413
-ks.test(test_data$log_CO2,
+test <- ks.test(test_data$log_CO2,
         "pnorm",
         mean(test_data$log_CO2),
         sqrt(var(test_data$log_CO2)))
@@ -143,6 +143,27 @@ g_variances <- c(var(test_data$log_CO2[test_data$level == income_levels[1]]),
                  var(test_data$log_CO2[test_data$level == income_levels[3]]),
                  var(test_data$log_CO2[test_data$level == income_levels[4]]))
 
+# testing for balanced samples
+test_data %>% count(level)
+
+# testing for normality amongst the samples
+test_results <- c(0,0,0,0)
+for (i in 1:4) {
+  curr_level <- income_levels[i]
+  curr_data <- test_data %>%
+    filter(level == curr_level)
+  curr_test_result <- ks.test(curr_data$log_CO2,
+          "pnorm",
+          mean(curr_data$log_CO2),
+          sqrt(var(curr_data$log_CO2)))$p.value
+  print(curr_test_result)
+}
+
+ks.test(test_data$log_CO2,
+        "pnorm",
+        mean(test_data$log_CO2),
+        sqrt(var(test_data$log_CO2)))
+
 
 
 ## testing the data ############################################################
@@ -152,3 +173,7 @@ kruskal.test(test_data$log_CO2,
 jonckheere.test(test_data$log_CO2,
                 as.numeric(test_data$level),
                 "increasing")
+
+oneway.test(log_CO2 ~ level, test_data)
+
+mood_test(log_CO2 ~ level, test_data)

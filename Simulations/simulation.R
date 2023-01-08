@@ -6,12 +6,12 @@ library(devtools)
 library(clinfun)
 
 ## config params ###############################################################
-offset <- seq(-0.5,0.5, len = 21)
+offset <- seq(-2,2, len = 21)
 alpha <- 0.05
 k <- 3
 n_sim <- 1000
 var <- 1
-n_sample <- 40
+n_sample <- "random"
 n_sample_pow <- seq(9,50, len = 20)
 
 
@@ -19,7 +19,7 @@ n_sample_pow <- seq(9,50, len = 20)
 gen_rnorm_params <- function(offset) {
   force(offset)
   mean <- c(offset, 0, 0)
-  var <- c(1,1,1)
+  var <- c(1,2,4)
   return(data.frame(mean = mean,
                     var = var))
 }
@@ -219,7 +219,7 @@ data_cauchy_p_plot <- include_method(data_cauchy_p)
 ## plotting the data ###########################################################
 theme_set(theme_minimal())
 
-p <- data_unif_b_plot %>%
+p <- data_norm_b_plot %>%
   ggplot(aes(x = offset,
              y = relative,
              group = method,
@@ -233,7 +233,7 @@ p + geom_line(size = 1) +
              linetype = "dashed",
              color = "grey37") +
   labs(title = "Beta-Simulation",
-       subtitle = "Cauchy-Verteilung") +
+       subtitle = "Normalverteilung + Heterosk. + unausgeglichene Stichproben") +
   xlab(expression(alpha[1])) +
   ylab("Güte")
 
